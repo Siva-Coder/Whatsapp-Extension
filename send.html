@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>Send Whatsapp</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">   
+<script src="https://live.zwidgets.com/js-sdk/1.0.5/ZohoEmbededAppSDK.min.js"></script>
+<style>
+body{
+    /* background: #dcf8c6; */
+    background-image: url("chat_bg.jpg");
+}
+textarea#message
+{
+    border-radius: 50px;
+    padding-left: 20px;
+    outline: none;
+    border: none;
+    height: 40px;
+    line-height: normal;
+}
+textarea#message::-webkit-scrollbar
+{
+    display: none;
+}
+select#numbers
+{
+  height: 180px;
+}
+</style>
+
+</head>
+<body>
+  <div class="text-center p-2" style="background:#008a7c;color: #fff;">
+    <h4>Send Whatsapp Message</h4>
+  </div>
+<div class="container-fluid pt-3">
+    <form class="form">
+        <div class="form-group row">
+            <label for="numbers" class="col-sm-3 col-form-label mt-4">Phone Numbers & Names</label>
+           
+            <div class="col-sm-9">
+                <select multiple class="form-control border-0" id="numbers">
+                  </select>
+              </div>
+          </div>
+        <div class="form-group row">
+          <label for="message" class="col-sm-3 col-form-label mt-2">Your Message</label>
+          <div class="col-sm-9 my-auto">
+            <div class="row">
+              <div class="col-md-11">
+            <textarea class="form-control border-0" id="message" style="outline: none;vertical-align: middle;" required></textarea>
+            </div>
+            <div class="col-md-0 my-auto">
+            <button type="submit" class="btn mr-2 text-white" style="float: right;border-radius: 50px;background: #008a7c;"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+            </div>
+          </div>
+          </div>
+        </div>
+        <!-- <div class="form-group row">
+          <div class="col-sm-10 ml-auto">
+            <button type="submit" class="btn mr-2 text-white" style="float: right;border-radius: 50px;background: #008a7c;">Send Whatsapp &nbsp;<i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+          </div>
+        </div> -->
+      </form>
+      <!-- <button type="submit" class="btn mr-2 text-white" style="float: right;border-radius: 50px;background: #008a7c;" id="send">Send Test &nbsp;<i class="fa fa-paper-plane" aria-hidden="true"></i></button> -->
+</div>
+
+<!-- Modal popup -->
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary d-none popup" data-toggle="modal" data-target="#exampleModalCenter">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Response</h5>
+        <button type="button" class="close" data-dismiss="modal" id="close1" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="response" class="text-justify font-weight-normal"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="close2" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  $('textarea').each(function () {
+  this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+}).on('input', function () {
+  this.style.height = 'auto';
+  this.style.height = (this.scrollHeight) + 'px';
+});
+var form = document.querySelector(".form");
+var message = document.getElementById("message");
+var select = document.getElementById("numbers");
+var result = document.getElementById("response");
+var pop = document.querySelector(".popup");
+var par = [];
+var Authkey;
+var ApiURL;
+var statu = '';
+
+    ZOHO.embeddedApp.on("PageLoad",function(data)
+{
+  ZOHO.CRM.UI.Resize({height:"425",width:"300"});
+    ZOHO.CRM.API.getOrgVariable("whatsappconnect__Authkey").then(function(data)
+    {
+	  Authkey = data.Success.Content;
+    });
+    ZOHO.CRM.API.getOrgVariable("whatsappconnect__API_URL").then(function(data)
+    {
+	  ApiURL = data.Success.Content;
+    });
+
+if(data && data.Entity)
+{
+  ZOHO.CRM.API.getAllRecords({Entity:data.Entity,RecordID:data.EntityId})
+			.then(function(response)
+			{
+        response.data.forEach((item,index) => {
+            let option = document.createElement("option");
+            option.text = item.Phone + " Full Name - " + item.Full_Name;
+            select.add(option);
+          }); //forEach End
+
+
+          form.addEventListener("submit", e => {
+            e.preventDefault();
+          response.data.forEach((item,index) => {
+            post(item);
+            createrecord(item);
+          }); //forEach End
+          });// Submit End.....
+          
+      function post(item)
+      {
+      var request ={
+		  url : ApiURL+"sendMessage?token="+Authkey+"&phone="+item.Phone+"&body="+encodeURIComponent(message.value.trim()),
+      } //request end
+
+      ZOHO.CRM.HTTP.post(request)
+      .then(function(resp)
+      {
+        pop.click();
+        //alert(resp);
+        par = JSON.parse(resp);
+        if(resp.sent == true)
+        {
+          result.innerHTML = "Message Sent Successfully <br> Description - " + resp.message + "<br> Success -" + resp.sent;
+          statu = par.sent;
+          // alert(statu);
+          
+        }
+        else if(resp.sent == false)
+        {
+          result.innerHTML = "Message Sending Failed! <br> Description - " + resp.message + "<br> Success -" + resp.sent;
+          statu = resp.sent;
+          alert(statu);
+        }
+        else
+        {
+          result.innerHTML = "Description - " + resp.message + "<br> Success -" + resp.sent;
+        }
+      message.value = '';
+      })// HTTP Post
+      }// POST Function End...
+
+
+      function createrecord(item)
+      {
+        //alert(statu);
+        var recordData = {
+        "whatsappconnect__Message": message.value,
+        "Name": "Outgoing Whatsapp Message",
+        "whatsappconnect__Contact": item.id,
+        "whatsappconnect__To": item.Phone,
+        "whatsappconnect__Status": statu,
+  }
+ZOHO.CRM.API.insertRecord({Entity:"whatsappconnect__Whatsapp_logs",APIData:recordData,Trigger:["workflow"]}).then(function(data){
+  console.log(data);
+ // alert(data);
+	});
+      }
+
+
+
+ /* phonenumbers = numbers.replace(/,(?=[^,]*$)/, '');
+    				document.getElementById("h").value = phonenumbers;
+            form.addEventListener("submit", e => {
+e.preventDefault();
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //document.getElementById("h").innerHTML = this.responseText;
+           alert(this.responseText);
+           message.value = '';
+        }
+    }
+    request.open('GET', 'https://panel.rapiwha.com/send_message.php?apikey='+Authkey+'&number='+numbers+'&text='+message.value,true);
+    request.send();
+  }); */
+// Submit form
+
+      
+    });	//response end
+
+}// Data entity
+
+// document.getElementById("close1").addEventListener("click",function(){
+//   ZOHO.CRM.UI.Popup.closeReload();
+// })
+
+document.getElementById("close2").addEventListener("click",function(){
+  ZOHO.CRM.UI.Popup.closeReload();
+})
+
+});// Embedd App
+ZOHO.embeddedApp.init();
+</script>
+</body>
+</html>
