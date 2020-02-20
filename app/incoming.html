@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>chatapp</title>
+  <!-- HTML -->
+  <script src="   https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/js/all.min.js    "></script>
+  <script src="jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+<body>
+    <h5 id="h">rtgyuhuj</h5>
+    <div id="images"></div>
+    <script>
+// (function() {
+//   var flickerAPI = "https://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";
+//   $.getJSON( flickerAPI, {
+//     tags: "mount rainier",
+//     tagmode: "any",
+//     format: "json"
+//   })
+//     .done(function( data ) {
+//       $.each( data.items, function( i, item ) {
+//         $( "<img>" ).attr( "src", item.media.m ).appendTo( "#images" );
+//         if ( i === 3 ) {
+//           return false;
+//         }
+//         console.log(item);
+//       });
+//     });
+// })();
+
+
+(function() {
+  var flickerAPI = "https://panel.rapiwha.com/get_messages.php?";
+  $.getJSON( flickerAPI, {
+    apikey: "WQIEEF4S9YRHIKOLBH5B",
+    type: "IN",
+    number: "916281400291"
+  })
+    .done(function( data ) {
+    //   $.each( data.items, function( i, item ) {
+    //     // $( "<img>" ).attr( "src", item.media.m ).appendTo( "#images" );
+    //     // if ( i === 3 ) {
+    //     //   return false;
+    //     // }
+    //     console.log(item);
+    //   });
+    console.log(data);
+    $("#images").html(data);
+    });
+})();
+    </script>
+</body>
+</html>

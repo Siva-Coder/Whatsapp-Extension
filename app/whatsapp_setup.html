@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	  <title>waap</title>
+    <meta charset="UTF-8">
+<script src="https://live.zwidgets.com/js-sdk/1.0.5/ZohoEmbededAppSDK.min.js"></script>
+<!-- <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>  -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<style>
+input {
+  background: #fff;
+  color: #525865;
+  /* border: 1px solid #d1d1d1; */
+  box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.07);
+  font-family: inherit;
+  font-size: 1em;
+  line-height: 1.45;
+  outline: none !important;
+  padding: 0.6em 1.45em 0.7em !important;
+  -webkit-transition: .18s ease-out;
+  -moz-transition: .18s ease-out;
+  -o-transition: .18s ease-out;
+  transition: .18s ease-out;
+  border-radius: 50px !important;
+}
+input:hover {
+  box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.02);
+}
+input:focus {
+  color: #4b515d;
+  border: 1px solid #B8B6B6;
+  box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.01), 0px 0px 8px rgba(0, 0, 0, 0.2);
+}
+div.outer
+{
+	position: absolute;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 2;
+  cursor: pointer;
+  text-align: center;
+}
+div.outer>h1
+{
+	position: relative;
+	transform: translate(0%,600%);
+	color: #fff;
+}
+</style>
+  </head>
+  <body>
+	  <div class="outer align-middle" id="outer">
+		  <h1>Successfully Updated Authentication Key!</h1>
+	  </div>
+	  <div class="container">
+		<div class="clearfix text-center mt-3">
+			<img src="whatsapp_connect.png" class="rounded" alt="...">
+			<h1>What'sApp Connect</h1>
+		  </div>
+	  <form name="form" class="">
+		  <div class="p-5">
+
+		  </div>
+		<div class="form-group row">
+		  <label for="Authkey" class="col-sm-2 col-form-label">Authentication Token</label>
+		  <div class="col-sm-10">
+			<input type="text" class="form-control" id="Authkey" name="Authkey" placeholder="Chat Authentication Token">
+		  </div>
+		</div> 
+		
+		<div class="form-group row">
+			<label for="URL" class="col-sm-2 col-form-label">CHAT API URL</label>
+			<div class="col-sm-10">
+			  <input type="text" class="form-control" id="API_URL" placeholder="Copy Chat Api URL and Paste Here">
+			</div>
+		  </div>
+		
+		<div class="form-group row">
+			<label for="URL" class="col-sm-2 col-form-label">Incoming URL</label>
+			<div class="col-sm-10">
+			  <input type="text" class="form-control" id="Incoming_URL" placeholder="Copy URL and Paste Into CHAT-API">
+			</div>
+		  </div>
+
+		
+
+		<div class="form-group row">
+		  <div class="col-sm-12 text-center mt-3">
+			<button type="button" class="btn btn-primary px-4" style="border-radius: 50px;" id="submit">Submit</button>
+		  </div>
+		</div>
+	  </form>
+
+</div>
+<script>
+
+
+ZOHO.embeddedApp.on("PageLoad",function(data)
+{
+
+	// ZOHO.CRM.CONFIG.getOrgInfo().then(function(data){
+	//console.log(data);	
+	var string = JSON.stringify(data,null,2);
+	var parsed = JSON.parse(string);
+	var func_name = "whatsappconnect__crmzapikey";
+var req_data ={
+  "arguments": JSON.stringify({
+    //   "res" : parsed.org[0].zgid 
+	"res" : ""
+  })
+};
+ZOHO.CRM.FUNCTIONS.execute(func_name, req_data)
+.then(function(response){
+	// var sresponse = JSON.stringify(response);
+	// var presponse = JSON.parse(sresponse);
+	// var zapikey = presponse.details.userMessage;
+	// document.getElementById("URL").value = zapikey;
+	var url = document.getElementById("Incoming_URL");
+
+ZOHO.CRM.API.getOrgVariable("whatsappconnect__Incoming_URL").then(function(data){
+	url.value = data.Success.Content;
+});
+
+});
+
+// });
+
+
+var Authkey = document.getElementById("Authkey");
+var ApiURL = document.getElementById("API_URL");
+
+ZOHO.CRM.API.getOrgVariable("whatsappconnect__Authkey").then(function(data){
+	Authkey.value = data.Success.Content;
+});
+
+ZOHO.CRM.API.getOrgVariable("whatsappconnect__API_URL").then(function(data){
+	ApiURL.value = data.Success.Content;
+});
+
+document.getElementById("submit").addEventListener('click',function(){
+	ZOHO.CRM.CONNECTOR.invokeAPI("crm.set",{
+    "apiname":"whatsappconnect__Authkey","value":Authkey.value
+}).then(function(data){
+    //   alert(data);
+	console.log(data);
+});
+ZOHO.CRM.CONNECTOR.invokeAPI("crm.set",{
+    "apiname":"whatsappconnect__API_URL","value":ApiURL.value
+}).then(function(data){
+    //   alert(data);
+	document.getElementById("outer").style.display = "block";
+});
+});
+//     ZOHO.CRM.API.getAllRecords({Entity:"Leads",sort_order:"asc",per_page:2,page:1})
+// .then(function(data){   
+
+/*
+	 	 * Verify if EntityInformation is Passed 
+	 	 */
+		if(data && data.Entity)
+		{
+			/*
+		 	 * Fetch Information of Record passed in PageLoad
+		 	 * and insert the response into the dom
+		 	 */
+			// ZOHO.CRM.API.getAllRecords({Entity:data.Entity,RecordID:data.EntityId})
+			// .then(function(response)
+			// {
+				
+    		// 		document.getElementById("h").innerHTML = JSON.stringify(response,null,2);
+			// });	
+			
+	
+
+		}
+
+		/*
+		 * Fetch Current User Information from CRM
+		 * and insert the response into the dom
+		 */
+		// ZOHO.CRM.CONFIG.getCurrentUser()
+		// .then(function(response)
+		// {
+		// 	document.getElementById("h").innerHTML = JSON.stringify(response,null,2);
+		// });
+		
+	})
+
+
+// });
+
+/*
+ * initializing the widget.
+ */
+ZOHO.embeddedApp.init();
+</script>
+
+
+</body>
+</html>
